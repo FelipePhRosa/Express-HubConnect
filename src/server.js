@@ -19,7 +19,7 @@ const start = async () => {
     });
     await server.register(routes_1.routes);
     const port = process.env.PORT || 4000; // Usando a porta configurada pelo Render ou uma padrão
-        server.listen(port, '0.0.0.0', (err, address) => {
+        server.listen({ port: port, host: '0.0.0.0' }, (err, address) => {
 
         if (err) {
             console.error(err);
