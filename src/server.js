@@ -2,30 +2,33 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const fastify_1 = __importDefault(require("fastify"));
-const routes_1 = require("./routes");
-const cors_1 = __importDefault(require("@fastify/cors"));
-const jwt_1 = __importDefault(require("@fastify/jwt"));
-const server = (0, fastify_1.default)({ logger: true });
+import fastify from 'fastify';
+import { routes } from './routes';
+import cors from '@fastify/cors';
+import jwt from '@fastify/jwt';
+
+const server = fastify({ logger: true});
+
 const start = async () => {
+
     server.setErrorHandler((error, request, reply) => {
         reply.code(400).send({ message: error.message });
-    });
-    await server.register(cors_1.default);
+    })
+
+    await server.register(cors);
+    
     // Registrando o plugin JWT
-    await server.register(jwt_1.default, {
+    await server.register(jwt, {
         secret: 'secretkey' // Melhor usar variável de ambiente em produção
     });
-    await server.register(routes_1.routes);
-    const port = process.env.PORT || 4000; // Usando a porta configurada pelo Render ou uma padrão
-        server.listen({ port: port, host: '0.0.0.0' }, (err, address) => {
+    
+    await server.register(routes);
+    
+    try{
+        await server.listen({ port: 5173 });
+    }catch(error){
+        process.exit(1);
+    }
+}
 
-        if (err) {
-            console.error(err);
-            process.exit(1);
-        }
-        console.log(`Server listening at ${address}`);
-    });
-};
 start();
