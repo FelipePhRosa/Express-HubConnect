@@ -1,26 +1,30 @@
-import fastify from "fastify";
-import { routes } from "./routes";
-import cors from "@fastify/cors";
-import jwt from "@fastify/jwt";
-import { VercelRequest, VercelResponse } from "@vercel/node"; // Importa os tipos da Vercel
+import fastify from 'fastify';
+import { routes } from './routes';
+import cors from '@fastify/cors';
+import jwt from '@fastify/jwt';
 
-const server = fastify({ logger: true });
+const server = fastify({ logger: true});
 
-server.setErrorHandler((error, request, reply) => {
-  reply.code(400).send({ message: error.message });
-});
+const start = async () => {
 
-server.register(cors);
+    server.setErrorHandler((error, request, reply) => {
+        reply.code(400).send({ message: error.message });
+    })
 
-// Registrando o plugin JWT
-server.register(jwt, {
-  secret: process.env.JWT_SECRET || "secretkey", // Usa variável de ambiente na produção
-});
+    await server.register(cors);
+    
+    // Registrando o plugin JWT
+    await server.register(jwt, {
+        secret: 'secretkey' // Melhor usar variável de ambiente em produção
+    });
+    
+    await server.register(routes);
+    
+    try{
+        await server.listen({ port: 5173 });
+    }catch(error){
+        process.exit(1);
+    }
+}
 
-server.register(routes);
-
-// Exportando Fastify corretamente para a Vercel
-export default async (req: VercelRequest, res: VercelResponse) => {
-  await server.ready();
-  server.server.emit("request", req, res);
-};
+start();
