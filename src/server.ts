@@ -1,24 +1,30 @@
-import fastify from "fastify";
-import { createUser } from "./routes/create-user";
-import fastifyJwt from "fastify-jwt";
-import { login } from "./routes/login";
-import { profile } from "./routes/profile";
+import fastify from 'fastify';
+import { routes } from './routes';
+import cors from '@fastify/cors';
+import jwt from '@fastify/jwt';
 
-const app = fastify()
+const server = fastify({ logger: true});
 
-app.register(createUser)
-app.register(login)
-app.register(profile)
+const start = async () => {
 
+    server.setErrorHandler((error, request, reply) => {
+        reply.code(400).send({ message: error.message });
+    })
 
-app.register(fastifyJwt, {
-    secret: "secret"
-})
+    await server.register(cors);
+    
+    // Registrando o plugin JWT
+    await server.register(jwt, {
+        secret: 'secretkey' // Melhor usar variável de ambiente em produção
+    });
+    
+    await server.register(routes);
+    
+    try{
+        await server.listen({ port: 5173 });
+    }catch(error){
+        process.exit(1);
+    }
+}
 
-app.get("/", () => {
-    return "olá vadia"
-})
-
-app.listen({
-    port: 3333
-}).then(() => console.log("server listening on port http://localhost:3333"))
+start();

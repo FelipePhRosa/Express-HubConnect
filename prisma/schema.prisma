@@ -3,13 +3,25 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
-
-model User{
-  id        String @id @default(cuid())
-  name      String @map("nome")
-  email     String @unique
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String    @unique
   password  String
+  stores    Store[]
+}
+
+
+model Store {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String   @default("")
+  ownerId     String   @db.ObjectId // Adicionando a anotação @db.ObjectId aqui também
+  user        User     @relation(fields: [ownerId], references: [id])
+  urlimage    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

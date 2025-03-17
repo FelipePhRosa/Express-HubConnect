@@ -1,17 +1,14 @@
 import { FastifyInstance } from "fastify";
-import { prisma } from "../lib/prisma";
+import { prisma } from "./lib/prisma";
 import z from "zod";
-import { verifyPassword } from "../utils/hash";
 
 export function login(app: FastifyInstance) {
-
     const loginSchema = z.object({
         email: z.string().email(),
         password: z.string(),
     })
 
     app.post("/login", async (req, res) => {
-    
         const {email, password} = loginSchema.parse(req.body);
 
         const user = await prisma.user.findUnique({
@@ -22,7 +19,8 @@ export function login(app: FastifyInstance) {
             return res.status(400).send({ error: "User not found" });
         }
 
-        const isPassword = await verifyPassword(password, user.password);
+        // Verificação simples de senha, sem usar hash
+        const isPassword = password === user.password;
 
         if (!isPassword) {
             return res.status(400).send({ error: "incorrect password" });
@@ -31,7 +29,9 @@ export function login(app: FastifyInstance) {
         const token = app.jwt.sign({
             id: user.id,
             email: user.email
-        })
+        }, {
+            expiresIn: '7d' // Token expira em 7 dias
+        });
 
         return res.status(200).send({ token });
     })
