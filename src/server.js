@@ -19,7 +19,8 @@ const start = async () => {
     });
     await server.register(routes_1.routes);
     const port = process.env.PORT || 3333; // Usando a porta configurada pelo Render ou uma padrão
-        fastify_1.listen(port, '0.0.0.0', (err, address) => {
+        server.listen(port, '0.0.0.0', (err, address) => {
+
         if (err) {
             console.error(err);
             process.exit(1);
