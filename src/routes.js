@@ -14,6 +14,11 @@ async function routes(fastify, options) {
     fastify.get("/", async (request, reply) => {
         return { hello: "world" };
     });
+
+    fastify.get("/api", async (request, reply) => {
+        return { message: "Fastify está rodando na Vercel! 🚀" };
+      });
+
     fastify.post("/user", async (request, reply) => {
         return new CreateUserController_1.CreateUserController().handle(request, reply);
     });
