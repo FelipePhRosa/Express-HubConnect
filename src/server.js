@@ -18,11 +18,13 @@ const start = async () => {
         secret: 'secretkey' // Melhor usar variável de ambiente em produção
     });
     await server.register(routes_1.routes);
-    try {
-        await server.listen({ port: 5173 });
-    }
-    catch (error) {
-        process.exit(1);
-    }
+    const port = process.env.PORT || 3333; // Usando a porta configurada pelo Render ou uma padrão
+        fastify_1.listen(port, '0.0.0.0', (err, address) => {
+        if (err) {
+            console.error(err);
+            process.exit(1);
+        }
+        console.log(`Server listening at ${address}`);
+    });
 };
 start();
