@@ -15,7 +15,7 @@ const start = async () => {
     
     // Registrando o plugin JWT
     await server.register(jwt, {
-        secret: 'secretkey' // Melhor usar variável de ambiente em produção
+        secret: 'secretkey'
     });
     
     await server.register(routes);
