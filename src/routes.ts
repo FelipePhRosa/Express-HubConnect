@@ -12,7 +12,24 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
     login(fastify);
     
     fastify.get("/", async (request: FastifyRequest, reply: FastifyReply) => {
-        return { hello: "world" }
+        return { 
+                    message: "Welcome to the LocalTED API!",
+                    routes: {
+                        users: {
+                            create: "POST /user",
+                            list: "GET /users",
+                            delete: "DELETE /user (auth required)"
+                        },
+                        stores: {
+                            create: "POST /store (auth required)",
+                            list: "GET /stores",
+                            delete: "DELETE /store (auth required)"
+                        },
+                        auth: {
+                            login: "POST /login"
+                        }
+                    }
+                }   
     })
 
     fastify.post("/user", async (request: FastifyRequest, reply: FastifyReply) => {
@@ -39,5 +56,11 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
     
     fastify.get("/stores", async (request: FastifyRequest, reply: FastifyReply) => {
         return new ListStoresController().handle(request, reply)
+    })
+
+    fastify.delete("/store", {
+        preHandler: authenticate
+    }, async (request: FastifyRequest, reply: FastifyReply) => {
+        return new DeleteUserController().handle(request, reply)
     })
 }

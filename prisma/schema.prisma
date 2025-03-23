@@ -14,6 +14,29 @@ model User {
   stores    Store[]
 }
 
+model Product {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String   @default("")
+  price       Float
+  storeId     String   @db.ObjectId // Adicionando a anotação @db.ObjectId aqui
+  store       Store    @relation(fields: [storeId], references: [id])
+  urlimage    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Service {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String   @default("")
+  price       Float
+  storeId     String   @db.ObjectId // Adicionando a anotação @db.ObjectId aqui
+  store       Store    @relation(fields: [storeId], references: [id])
+  urlimage    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 
 model Store {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -22,6 +45,8 @@ model Store {
   ownerId     String   @db.ObjectId // Adicionando a anotação @db.ObjectId aqui também
   user        User     @relation(fields: [ownerId], references: [id])
   urlimage    String?
+  products    Product[]
+  service     Service[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
