@@ -30,7 +30,7 @@ export function login(app: FastifyInstance) {
             id: user.id,
             email: user.email
         }, {
-            expiresIn: '7d' // Token expira em 7 dias
+            expiresIn: '12h'
         });
 
         return res.status(200).send({ token });

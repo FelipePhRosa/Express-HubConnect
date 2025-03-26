@@ -6,6 +6,7 @@ import { CreateStoreController } from "./controllers/CreateStoreController";
 import { ListStoresController } from "./controllers/ListStoreController";
 import { login } from "./login";
 import { authenticate } from "./auth";
+import { DeleteStoreController } from "./controllers/DeleteStoreController";
 
 export async function routes(fastify: FastifyInstance, options: FastifyPluginOptions){
 
@@ -40,6 +41,7 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
     fastify.get("/users", async (request: FastifyRequest, reply: FastifyReply) => {
         return new ListUserController().handle(request, reply)
     })
+        
 
     fastify.delete("/user", {
         preHandler: authenticate
@@ -58,9 +60,10 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
         return new ListStoresController().handle(request, reply)
     })
 
-    fastify.delete("/store", {
-        preHandler: authenticate
+    fastify.delete("/store/:storeId", {
+        preHandler: authenticate // Se necessário
     }, async (request: FastifyRequest, reply: FastifyReply) => {
-        return new DeleteUserController().handle(request, reply)
-    })
+        return new DeleteStoreController().handle(request, reply);
+    });
+    
 }

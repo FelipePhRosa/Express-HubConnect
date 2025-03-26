@@ -11,7 +11,7 @@ export class CreateStoreController {
       const createStoreSchema = z.object({
         name: z.string(),
         urlimage: z.string().url().optional(),
-        description: z.string()
+        description: z.string(),
       });
 
       const { name, urlimage, description } = createStoreSchema.parse(request.body);
@@ -34,7 +34,8 @@ export class CreateStoreController {
         ownerId: store.ownerId,
       });
     } catch (error) {
-      return reply.status(400).send({ error: "Error creating store" });
+      console.error("Error details:", error);
+      return reply.status(400).send({ error: "Error creating store"});
     }
   }
 }

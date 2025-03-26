@@ -3,24 +3,18 @@ import { DeleteStoreService } from "../services/DeleteStoreService";
 
 class DeleteStoreController {
     async handle(request: FastifyRequest, reply: FastifyReply) {
-        try {
-            // Pegando storeId do corpo da requisição
-            const { storeId } = request.body as { storeId: string };
+        // Pegando o parâmetro da URL (storeId)
+        const { storeId } = request.params as { storeId: string };
 
-            // Pegando ownerId do usuário autenticado (vem do middleware de autenticação)
-            const ownerId = request.user?.id; // Assumindo que `request.user` contém o usuário autenticado
+        // Pegando o ownerId a partir do usuário autenticado (request.user.id)
+        const ownerId = request.user.id;
 
-            if (!ownerId) {
-                return reply.status(401).send({ error: "Unauthorized" });
-            }
+        // Chamando o serviço de exclusão
+        const storeService = new DeleteStoreService();
 
-            const deleteStoreService = new DeleteStoreService();
-            const result = await deleteStoreService.execute({ storeId, ownerId });
+        const response = await storeService.execute({ storeId, ownerId });
 
-            return reply.status(200).send(result);
-        } catch (error: any) {
-            return reply.status(400).send({ error: error.message });
-        }
+        reply.send(response);
     }
 }
 
