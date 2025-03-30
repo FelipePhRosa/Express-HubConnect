@@ -2,6 +2,7 @@ import fastify from 'fastify';
 import { routes } from './routes';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
+import { authenticate } from "./auth";
 
 const server = fastify({ logger: true});
 
@@ -18,6 +19,8 @@ const start = async () => {
         secret: "a63960c60be1671d2f16ec1d8454f005fe7225996716e70a5cc369d901280ea3"
     });
     
+    server.decorate("authenticate", authenticate);
+
     await server.register(routes);
     
     try{
