@@ -7,6 +7,9 @@ import { ListStoresController } from "./controllers/ListStoreController";
 import { login } from "./login";
 import { authenticate } from "./auth";
 import { DeleteStoreController } from "./controllers/DeleteStoreController";
+import { CreateProductController } from "./controllers/CreateProductController";
+import { StoreProductParams } from "./interface/StoreProductParams";
+
 
 export async function routes(fastify: FastifyInstance, options: FastifyPluginOptions){
 
@@ -28,7 +31,11 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
                         },
                         auth: {
                             login: "POST /login"
+                        },
+                        products: {
+                            create: "POST /store/:storeId/product (auth required)"
                         }
+                        
                     }
                 }   
     })
@@ -37,12 +44,11 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
         return new CreateUserController().handle(request, reply)
     })
 
-    // Rota protegida com autenticação
     fastify.get("/users", async (request: FastifyRequest, reply: FastifyReply) => {
         return new ListUserController().handle(request, reply)
     })
         
-
+    // Rota protegida com autenticação
     fastify.delete("/user", {
         preHandler: authenticate
     }, async (request: FastifyRequest, reply: FastifyReply) => {
@@ -60,10 +66,17 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
         return new ListStoresController().handle(request, reply)
     })
 
+    // Rota protegida com autenticação
     fastify.delete("/store/:storeId", {
-        preHandler: authenticate // Se necessário
+        preHandler: authenticate 
     }, async (request: FastifyRequest, reply: FastifyReply) => {
         return new DeleteStoreController().handle(request, reply);
     });
     
+    
+    fastify.post("/store/:storeId/product", {
+        preHandler: authenticate
+    }, async (request: FastifyRequest<StoreProductParams>, reply: FastifyReply) => {
+        return new CreateProductController().handle(request, reply)
+    });
 }
