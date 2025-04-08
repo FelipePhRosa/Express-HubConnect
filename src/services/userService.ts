@@ -24,5 +24,6 @@ export default class UserService {
     async deleteUser(userId: number) {
         return await connection('Users').where({ id_user: userId }).delete();
     }
+    
 }
 
