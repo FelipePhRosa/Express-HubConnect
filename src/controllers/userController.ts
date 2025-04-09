@@ -1,8 +1,10 @@
+import bcrypt from "bcrypt"
 import { Request, Response } from "express";
 import UserService from "../services/userService";
+import AuthService from "../services/authService";
 
 export default class UserController {
-    constructor(private userService = new UserService()){}
+    constructor(private userService = new UserService(), private authService = new AuthService()){}
 
     welcome(req: Request, res: Response) {
         res.json({ 
@@ -31,11 +33,24 @@ export default class UserController {
     }
 
     async createUser(req: Request, res: Response) {
-        const { nameUser, lastName, ageUser, password_hash, nationalityUser } = req.body
+        const { nameUser, lastName, email, ageUser, password_hash, nationalityUser } = req.body
+        const hashedPassword = await bcrypt.hash(password_hash, 10);
 
         try {
-            await this.userService.createUser({ nameUser, lastName, ageUser, password_hash, nationalityUser });
-            res.status(200).send(`User ${nameUser}, insert successfully!`);
+            await this.userService.createUser({ 
+                nameUser, 
+                lastName, 
+                email, 
+                ageUser, 
+                password_hash: hashedPassword, 
+                nationalityUser });
+            res.status(200).json({ message:`User ${nameUser}, insert successfully!`,
+                                   data: nameUser,
+                                         lastName,
+                                         email,
+                                         ageUser,
+                                         password_hash
+            });
         } catch(error){
             res.status(500).json({ error: `Error to insert User.`, details: error })
         }
