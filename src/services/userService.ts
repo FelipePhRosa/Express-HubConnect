@@ -1,8 +1,11 @@
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import connection from "../SQL/connection"
 
 interface UserData{
     nameUser: string
     lastName: string
+    email: string
     ageUser: number
     password_hash: string
     nationalityUser: string
