@@ -30,7 +30,7 @@ export default class AuthService {
 
     } catch (error) {
         
-      throw new Error("Token inválido ou expirado");
+      throw new Error("Invalid Token or Expired.");
     }
   }
 
@@ -42,7 +42,7 @@ export default class AuthService {
         .first();
 
       if (!user) {
-        throw new Error("Credenciais inválidas");
+        throw new Error("Invalid Credentials");
       }
 
       const isPasswordValid = await bcrypt.compare(
@@ -51,7 +51,7 @@ export default class AuthService {
       );
 
       if (!isPasswordValid) {
-        throw new Error("Credenciais inválidas");
+        throw new Error("Invalid Credentials");
       }
 
       const token = this.generateToken({
