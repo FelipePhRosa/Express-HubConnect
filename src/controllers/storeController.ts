@@ -26,6 +26,10 @@ export default class StoreController {
         try {
             const user = await this.userService.getUserById(Number(userId));
 
+            if (!user){
+                res.status(500).send(`User not found.`)
+            }
+            
             await this.storesService.createStore({ 
                 ownerId: user.id_user, 
                 nameStore, 
@@ -49,6 +53,6 @@ export default class StoreController {
             res.status(500).json({ error: `Error to insert Store.`, details: error })
         }
     }
-    
+
 
 }
