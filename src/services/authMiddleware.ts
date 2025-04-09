@@ -21,8 +21,8 @@ export const authenticate = async (
   try {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      res.status(401).json({ error: "Token ausente ou inválido" });
+    if (!authHeader || !authHeader.startsWith("Bearer")) {
+      res.status(401).json({ error: "Invalid Token or Expired." });
       return
     }
 
@@ -34,7 +34,7 @@ export const authenticate = async (
       .first();
 
     if (!user) {
-      res.status(401).json({ error: "Usuário não encontrado" });
+      res.status(401).json({ error: "User not found." });
       return
     }
 
@@ -45,7 +45,7 @@ export const authenticate = async (
 
     next();
   } catch (error) {
-    res.status(401).json({ error: "Token inválido ou expirado" });
+    res.status(401).json({ error: "Invalid Token or Expired." });
     return
   }
 };
@@ -61,11 +61,11 @@ export const isOwner = async (
       .first();
 
     if (!user?.isOwner) {
-      return res.status(403).json({ error: "Acesso negado: precisa ser proprietário" });
+      return res.status(403).json({ error: "Acess Denied: You need been Owner." });
     }
 
     next();
   } catch (error) {
-    return res.status(500).json({ error: "Erro no servidor ao verificar proprietário" });
+    return res.status(500).json({ error: "Error server to verify Owner." });
   }
 };
