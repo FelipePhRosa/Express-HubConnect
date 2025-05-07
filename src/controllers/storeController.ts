@@ -20,39 +20,47 @@ export default class StoreController {
 
         if (!userId) {
             res.status(401).json({ error: `Unauthorized` });
-            return
+            return;
         }
 
-        try {
-            const user = await this.userService.getUserById(Number(userId));
+        if (!nameStore || !descriptionStore || !category || !urlImage){
+            res.status(401).send(`Please fill in all the fields`)
+            return;
+        }
 
-            if (!user){
-                res.status(500).send(`User not found.`)
-            }
-            
-            await this.storesService.createStore({ 
-                ownerId: user.id_user, 
-                nameStore, 
-                descriptionStore, 
-                category, 
-                urlImage });
+        if (nameStore)
 
-            res.status(201).json({
-                message: `Store ${nameStore} was created from user ${user.nameUser}`,
-                data: {
+            try {
+                const user = await this.userService.getUserById(Number(userId));
+
+                if (!user){
+                    res.status(500).send(`User not found.`)
+                    return;
+                }
+                
+                await this.storesService.createStore({ 
                     ownerId: user.id_user, 
-                    nameUser: user.nameUser,
                     nameStore, 
                     descriptionStore, 
                     category, 
-                    urlImage
-                }
-                });
+                    urlImage });
 
-        } catch(error){
-            res.status(500).json({ error: `Error to insert Store.`, details: error })
-        }
+                res.status(201).json({
+                    message: `Store ${nameStore} was created from user ${user.nameUser}`,
+                    data: {
+                        ownerId: user.id_user, 
+                        nameUser: user.nameUser,
+                        nameStore, 
+                        descriptionStore, 
+                        category, 
+                        urlImage
+                    }
+                    });
+                return;
+
+            } catch(error){
+                res.status(500).json({ error: `Error to insert Store.`, details: error })
+                return;
+            }
     }
-
-
 }
