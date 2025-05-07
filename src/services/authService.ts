@@ -34,7 +34,7 @@ export default class AuthService {
     }
   }
 
-  // Autentica um usuário (login)
+  // Autentica um usuário
   async login(credentials: LoginCredentials) {
     try {
       const user = await connection("Users")
